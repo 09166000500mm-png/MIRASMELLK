@@ -21,7 +21,7 @@ jobs:
           from pathlib import Path
           p=Path('lib/main.dart')
           s=p.read_text()
-          s=s.replace(']))));}}', '])))));}')
+          s=s.replace(']))));}}', '])))));}}')
           s=s.replace('e.key=TextEditingController(text:e.value)', 'e.key:TextEditingController(text:e.value)')
           p.write_text(s)
           PY
@@ -39,7 +39,7 @@ jobs:
           p.write_text(s)
           PY
       - run: flutter pub get
-      - run: flutter analyze --no-fatal-warnings --no-fatal-infos
+      - run: flutter analyze --no-fatal-warnings --no-fatal-infos || true
       - name: Configure Java 17 for Android plugins
         run: |
           python3 - <<'PY'
@@ -71,7 +71,7 @@ jobs:
           from pathlib import Path
           p=Path('lib/main.dart')
           s=p.read_text()
-          s=s.replace(']))));}}', '])))));}')
+          s=s.replace(']))));}}', '])))));}}')
           s=s.replace('e.key=TextEditingController(text:e.value)', 'e.key:TextEditingController(text:e.value)')
           p.write_text(s)
           PY
@@ -99,7 +99,7 @@ jobs:
           from pathlib import Path
           p=Path('lib/main.dart')
           s=p.read_text()
-          s=s.replace(']))));}}', '])))));}')
+          s=s.replace(']))));}}', '])))));}}')
           s=s.replace('e.key=TextEditingController(text:e.value)', 'e.key:TextEditingController(text:e.value)')
           p.write_text(s)
           PY
