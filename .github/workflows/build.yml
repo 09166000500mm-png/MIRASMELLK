@@ -1,4 +1,5 @@
 name: Build Mirasmellk
+# final syntax pass for Android APK
 on:
   push:
     branches: [main]
