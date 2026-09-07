@@ -15,7 +15,9 @@ jobs:
           cache: true
       - run: flutter create --platforms=android,web .
       - name: Use final clean source
-        run: cp lib/main_final.dart lib/main.dart
+        run: |
+          cp lib/main_final.dart lib/main.dart
+          rm -f lib/main_final.dart lib/main_clean.dart test/widget_test.dart
       - name: Configure Android share receiver
         run: |
           python3 - <<'PY'
@@ -54,7 +56,10 @@ jobs:
           channel: stable
           cache: true
       - run: flutter create --platforms=web .
-      - run: cp lib/main_final.dart lib/main.dart
+      - name: Use final clean source
+        run: |
+          cp lib/main_final.dart lib/main.dart
+          rm -f lib/main_final.dart lib/main_clean.dart test/widget_test.dart
       - run: flutter pub get
       - run: flutter build web --release
       - uses: actions/upload-artifact@v4
@@ -71,7 +76,10 @@ jobs:
           channel: stable
           cache: true
       - run: flutter create --platforms=ios .
-      - run: cp lib/main_final.dart lib/main.dart
+      - name: Use final clean source
+        run: |
+          cp lib/main_final.dart lib/main.dart
+          rm -f lib/main_final.dart lib/main_clean.dart test/widget_test.dart
       - run: flutter pub get
       - run: flutter build ios --release --no-codesign
       - uses: actions/upload-artifact@v4
