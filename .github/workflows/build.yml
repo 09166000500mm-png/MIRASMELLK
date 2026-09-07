@@ -14,9 +14,17 @@ jobs:
           channel: stable
           cache: true
       - run: flutter create --platforms=android,web .
-      - name: Use final clean source
+      - name: Prepare final source
         run: |
           cp lib/main_final.dart lib/main.dart
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('lib/main.dart')
+          s=p.read_text()
+          s=s.replace(']))));}}\n\nclass Dashboard', ']))));}\n\nclass Dashboard')
+          s=s.replace('e.key=TextEditingController(text:e.value)', 'e.key:TextEditingController(text:e.value)')
+          p.write_text(s)
+          PY
           rm -f lib/main_final.dart lib/main_clean.dart test/widget_test.dart
       - name: Configure Android share receiver
         run: |
@@ -56,9 +64,17 @@ jobs:
           channel: stable
           cache: true
       - run: flutter create --platforms=web .
-      - name: Use final clean source
+      - name: Prepare final source
         run: |
           cp lib/main_final.dart lib/main.dart
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('lib/main.dart')
+          s=p.read_text()
+          s=s.replace(']))));}}\n\nclass Dashboard', ']))));}\n\nclass Dashboard')
+          s=s.replace('e.key=TextEditingController(text:e.value)', 'e.key:TextEditingController(text:e.value)')
+          p.write_text(s)
+          PY
           rm -f lib/main_final.dart lib/main_clean.dart test/widget_test.dart
       - run: flutter pub get
       - run: flutter build web --release
@@ -76,9 +92,17 @@ jobs:
           channel: stable
           cache: true
       - run: flutter create --platforms=ios .
-      - name: Use final clean source
+      - name: Prepare final source
         run: |
           cp lib/main_final.dart lib/main.dart
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('lib/main.dart')
+          s=p.read_text()
+          s=s.replace(']))));}}\n\nclass Dashboard', ']))));}\n\nclass Dashboard')
+          s=s.replace('e.key=TextEditingController(text:e.value)', 'e.key:TextEditingController(text:e.value)')
+          p.write_text(s)
+          PY
           rm -f lib/main_final.dart lib/main_clean.dart test/widget_test.dart
       - run: flutter pub get
       - run: flutter build ios --release --no-codesign
