@@ -14,6 +14,18 @@ jobs:
           channel: stable
           cache: true
       - run: flutter create --platforms=android,web .
+      - name: Configure Android share receiver
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('android/app/src/main/AndroidManifest.xml')
+          s=p.read_text()
+          s=s.replace('android:exported="true"', 'android:exported="true" android:launchMode="singleTask"', 1)
+          marker='</activity>'
+          share='''\n            <intent-filter>\n                <action android:name="android.intent.action.SEND" />\n                <category android:name="android.intent.category.DEFAULT" />\n                <data android:mimeType="text/plain" />\n            </intent-filter>\n            <intent-filter>\n                <action android:name="android.intent.action.SEND" />\n                <category android:name="android.intent.category.DEFAULT" />\n                <data android:mimeType="text/*" />\n            </intent-filter>\n          '''
+          s=s.replace(marker, share+marker, 1)
+          p.write_text(s)
+          PY
       - run: flutter pub get
       - run: flutter analyze
       - run: flutter build apk --release
