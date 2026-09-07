@@ -14,17 +14,8 @@ jobs:
           channel: stable
           cache: true
       - run: flutter create --platforms=android,web .
-      - name: Patch Dart source for release build
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          p=Path('lib/main.dart')
-          s=p.read_text()
-          s=s.replace(']))));\n}\n}\n\nclass Dashboard', '])))));\n}\n}\n\nclass Dashboard')
-          s=s.replace('SettingsPage(onTheme:onTheme)', 'SettingsPage(onTheme:widget.onTheme)')
-          p.write_text(s)
-          Path('lib/main_clean.dart').unlink(missing_ok=True)
-          PY
+      - name: Use final clean source
+        run: cp lib/main_final.dart lib/main.dart
       - name: Configure Android share receiver
         run: |
           python3 - <<'PY'
@@ -63,17 +54,7 @@ jobs:
           channel: stable
           cache: true
       - run: flutter create --platforms=web .
-      - name: Patch Dart source for web build
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          p=Path('lib/main.dart')
-          s=p.read_text()
-          s=s.replace(']))));\n}\n}\n\nclass Dashboard', '])))));\n}\n}\n\nclass Dashboard')
-          s=s.replace('SettingsPage(onTheme:onTheme)', 'SettingsPage(onTheme:widget.onTheme)')
-          p.write_text(s)
-          Path('lib/main_clean.dart').unlink(missing_ok=True)
-          PY
+      - run: cp lib/main_final.dart lib/main.dart
       - run: flutter pub get
       - run: flutter build web --release
       - uses: actions/upload-artifact@v4
@@ -90,17 +71,7 @@ jobs:
           channel: stable
           cache: true
       - run: flutter create --platforms=ios .
-      - name: Patch Dart source for iOS build
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          p=Path('lib/main.dart')
-          s=p.read_text()
-          s=s.replace(']))));\n}\n}\n\nclass Dashboard', '])))));\n}\n}\n\nclass Dashboard')
-          s=s.replace('SettingsPage(onTheme:onTheme)', 'SettingsPage(onTheme:widget.onTheme)')
-          p.write_text(s)
-          Path('lib/main_clean.dart').unlink(missing_ok=True)
-          PY
+      - run: cp lib/main_final.dart lib/main.dart
       - run: flutter pub get
       - run: flutter build ios --release --no-codesign
       - uses: actions/upload-artifact@v4
