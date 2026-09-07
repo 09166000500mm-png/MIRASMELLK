@@ -1,7 +1,7 @@
 name: mirasmellk
 description: سیستم مدیریت هوشمند دپارتمان املاک میراث ملک
 publish_to: 'none'
-version: 1.0.0+4
+version: 1.0.0+5
 
 environment:
   sdk: '>=3.5.0 <4.0.0'
@@ -16,6 +16,7 @@ dependencies:
   url_launcher: ^6.3.2
   receive_sharing_intent: 1.8.1
   http: ^1.6.0
+  crypto: ^3.0.6
 
 dev_dependencies:
   flutter_test:
