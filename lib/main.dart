@@ -15,10 +15,7 @@ class MirathMelkApp extends StatelessWidget {
       locale: const Locale('fa'),
       supportedLocales: const [Locale('fa')],
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff123b72)),
-      ),
+      theme: ThemeData(useMaterial3: true, colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff123b72))),
       home: const LoginPage(),
     );
   }
@@ -26,15 +23,14 @@ class MirathMelkApp extends StatelessWidget {
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
-
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final username = TextEditingController();
-  final password = TextEditingController();
-  bool hidePassword = true;
+  final user = TextEditingController();
+  final pass = TextEditingController();
+  bool hidden = true;
 
   @override
   Widget build(BuildContext context) {
@@ -44,52 +40,27 @@ class _LoginPageState extends State<LoginPage> {
           constraints: const BoxConstraints(maxWidth: 460),
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
-            child: Column(
-              children: [
-                const Icon(Icons.apartment, size: 82, color: Color(0xff123b72)),
-                const SizedBox(height: 12),
-                const Text('میراث ملک', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 6),
-                const Text('سیستم مدیریت هوشمند دپارتمان املاک'),
-                const SizedBox(height: 35),
-                TextField(
-                  controller: username,
-                  decoration: const InputDecoration(
-                    labelText: 'نام کاربری',
-                    prefixIcon: Icon(Icons.person),
-                    border: OutlineInputBorder(),
-                  ),
+            child: Column(children: [
+              const Icon(Icons.apartment, size: 80),
+              const SizedBox(height: 12),
+              const Text('میراث ملک', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+              const Text('سیستم مدیریت هوشمند دپارتمان املاک'),
+              const SizedBox(height: 32),
+              TextField(controller: user, decoration: const InputDecoration(labelText: 'نام کاربری', prefixIcon: Icon(Icons.person), border: OutlineInputBorder())),
+              const SizedBox(height: 12),
+              TextField(
+                controller: pass,
+                obscureText: hidden,
+                decoration: InputDecoration(
+                  labelText: 'رمز عبور',
+                  prefixIcon: const Icon(Icons.lock),
+                  border: const OutlineInputBorder(),
+                  suffixIcon: IconButton(onPressed: () => setState(() => hidden = !hidden), icon: Icon(hidden ? Icons.visibility : Icons.visibility_off)),
                 ),
-                const SizedBox(height: 14),
-                TextField(
-                  controller: password,
-                  obscureText: hidePassword,
-                  decoration: InputDecoration(
-                    labelText: 'رمز عبور',
-                    prefixIcon: const Icon(Icons.lock),
-                    border: const OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                      onPressed: () => setState(() => hidePassword = !hidePassword),
-                      icon: Icon(hidePassword ? Icons.visibility : Icons.visibility_off),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: double.infinity,
-                  height: 54,
-                  child: FilledButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (_) => const Dashboard()),
-                      );
-                    },
-                    child: const Text('ورود به سامانه', style: TextStyle(fontSize: 18)),
-                  ),
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 18),
+              SizedBox(width: double.infinity, height: 52, child: FilledButton(onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const Dashboard())), child: const Text('ورود به سامانه'))),
+            ]),
           ),
         ),
       ),
@@ -98,18 +69,8 @@ class _LoginPageState extends State<LoginPage> {
 }
 
 class Property {
-  String code;
-  String type;
-  String title;
-  String address;
-  String owner;
-  String phone;
-  String price;
-  String area;
-  String rooms;
-  String year;
-  String link;
-  String desc;
+  String code, type, title, address, owner, phone, price, area, rooms, year, link, desc;
+  Map<String, String> options;
 
   Property({
     required this.code,
@@ -124,15 +85,16 @@ class Property {
     required this.year,
     required this.link,
     required this.desc,
+    required this.options,
   });
 }
 
 final List<Property> properties = [];
 final List<String> clients = [];
+final List<String> meetings = [];
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
-
   @override
   State<Dashboard> createState() => _DashboardState();
 }
@@ -149,16 +111,15 @@ class _DashboardState extends State<Dashboard> {
       const CommissionPage(),
       const MeetingPage(),
     ];
-
     return Scaffold(
       appBar: AppBar(title: const Text('میراث ملک'), centerTitle: true),
       body: pages[tab],
       bottomNavigationBar: NavigationBar(
         selectedIndex: tab,
-        onDestinationSelected: (index) => setState(() => tab = index),
+        onDestinationSelected: (i) => setState(() => tab = i),
         destinations: const [
           NavigationDestination(icon: Icon(Icons.dashboard), label: 'خانه'),
-          NavigationDestination(icon: Icon(Icons.home_work), label: 'فایل‌ها'),
+          NavigationDestination(icon: Icon(Icons.home_work), label: 'ثبت فایل'),
           NavigationDestination(icon: Icon(Icons.people), label: 'مشتریان'),
           NavigationDestination(icon: Icon(Icons.calculate), label: 'کمیسیون'),
           NavigationDestination(icon: Icon(Icons.event), label: 'جلسات'),
@@ -170,65 +131,32 @@ class _DashboardState extends State<Dashboard> {
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(18),
-      children: [
-        const Text('داشبورد مدیریت', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 18),
-        Wrap(
-          spacing: 12,
-          runSpacing: 12,
-          children: [
-            _card('فایل ملکی', '${properties.length}', Icons.home_work),
-            _card('مشتری', '${clients.length}', Icons.people),
-            _card('جلسات', 'تقویم', Icons.event),
-            _card('کمیسیون', 'محاسبه', Icons.calculate),
-          ],
-        ),
-        const SizedBox(height: 20),
-        const Card(
-          child: Padding(
-            padding: EdgeInsets.all(18),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('امکانات سامانه', style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold)),
-                SizedBox(height: 10),
-                Text('ثبت و ویرایش فایل، جستجوی مشتری، محاسبه کمیسیون، ثبت جلسات و آماده‌سازی پیام برای مشتری.'),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
+    return ListView(padding: const EdgeInsets.all(16), children: [
+      const Text('داشبورد مدیریت', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
+      const SizedBox(height: 16),
+      Wrap(spacing: 10, runSpacing: 10, children: [
+        _box('فایل ملکی', properties.length, Icons.home_work),
+        _box('مشتری', clients.length, Icons.people),
+        _box('جلسه', meetings.length, Icons.event),
+        _box('کمیسیون', null, Icons.calculate),
+      ]),
+      const SizedBox(height: 20),
+      Card(child: Padding(padding: const EdgeInsets.all(18), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
+        Text('ثبت فایل جدید', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        SizedBox(height: 8),
+        Text('اطلاعات اصلی را وارد کنید و امکانات و ویژگی‌های ملک را فقط با تیک انتخاب کنید. برای هر گزینه انتخاب‌شده، توضیح اختیاری کنار آن قرار دارد.'),
+      ]))),
+    ]);
   }
 
-  Widget _card(String title, String value, IconData icon) {
-    return SizedBox(
-      width: 170,
-      height: 115,
-      child: Card(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 34),
-            Text(title),
-            Text(value, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          ],
-        ),
-      ),
-    );
-  }
+  Widget _box(String title, int? value, IconData icon) => SizedBox(width: 165, height: 110, child: Card(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [Icon(icon, size: 32), Text(title), if (value != null) Text('$value', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold))])));
 }
 
 class PropertyPage extends StatefulWidget {
   final VoidCallback onChanged;
-
   const PropertyPage({super.key, required this.onChanged});
-
   @override
   State<PropertyPage> createState() => _PropertyPageState();
 }
@@ -236,126 +164,49 @@ class PropertyPage extends StatefulWidget {
 class _PropertyPageState extends State<PropertyPage> {
   final search = TextEditingController();
   String filter = 'همه';
-
-  final types = const ['همه', 'آپارتمان', 'ویلا', 'تجاری', 'زمین', 'باغ', 'مشارکت', 'پیش‌فروش'];
+  final types = const ['همه', 'آپارتمان', 'ویلا', 'تجاری', 'اداری', 'زمین', 'باغ', 'مشارکت', 'پیش‌فروش'];
 
   @override
   Widget build(BuildContext context) {
-    final list = properties.where((property) {
-      final text = '${property.title} ${property.code} ${property.address} ${property.owner}'.toLowerCase();
-      return (filter == 'همه' || property.type == filter) && text.contains(search.text.toLowerCase());
+    final list = properties.where((p) {
+      final text = '${p.title} ${p.code} ${p.address} ${p.owner} ${p.phone}'.toLowerCase();
+      return (filter == 'همه' || p.type == filter) && text.contains(search.text.toLowerCase());
     }).toList();
 
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: search,
-                  onChanged: (_) => setState(() {}),
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.search),
-                    labelText: 'جستجو',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              IconButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (_) => PropertyForm(
-                      onSave: (property) {
-                        properties.add(property);
-                        setState(() {});
-                        widget.onChanged();
-                      },
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.add_circle, size: 34),
-              ),
-            ],
-          ),
-        ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Row(
-            children: types.map((type) {
-              return Padding(
-                padding: const EdgeInsets.only(left: 6),
-                child: ChoiceChip(
-                  label: Text(type),
-                  selected: filter == type,
-                  onSelected: (_) => setState(() => filter = type),
-                ),
-              );
-            }).toList(),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Expanded(
-          child: list.isEmpty
-              ? const Center(child: Text('هنوز فایلی ثبت نشده است'))
-              : ListView.builder(
-                  itemCount: list.length,
-                  itemBuilder: (_, index) {
-                    final property = list[index];
-                    return Card(
-                      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                      child: ListTile(
-                        title: Text('${property.code} - ${property.title}'),
-                        subtitle: Text('${property.type} | ${property.area} متر | ${property.price}\n${property.address}'),
-                        isThreeLine: true,
-                        trailing: PopupMenuButton<String>(
-                          itemBuilder: (_) => const [
-                            PopupMenuItem(value: 'edit', child: Text('ویرایش')),
-                            PopupMenuItem(value: 'sms', child: Text('پیامک')),
-                          ],
-                          onSelected: (value) async {
-                            if (value == 'edit') {
-                              showDialog(
-                                context: context,
-                                builder: (_) => PropertyForm(
-                                  initial: property,
-                                  onSave: (updated) {
-                                    final position = properties.indexOf(property);
-                                    if (position >= 0) properties[position] = updated;
-                                    setState(() {});
-                                    widget.onChanged();
-                                  },
-                                ),
-                              );
-                            }
-                            if (value == 'sms' && property.phone.isNotEmpty) {
-                              final body = Uri.encodeComponent(
-                                'سلام، در خصوص فایل ${property.title} از دپارتمان میراث ملک با شما تماس می‌گیریم.',
-                              );
-                              await launchUrl(Uri.parse('sms:${property.phone}?body=$body'));
-                            }
-                          },
-                        ),
-                      ),
-                    );
-                  },
-                ),
-        ),
-      ],
-    );
+    return Column(children: [
+      Padding(padding: const EdgeInsets.all(12), child: Row(children: [
+        Expanded(child: TextField(controller: search, onChanged: (_) => setState(() {}), decoration: const InputDecoration(prefixIcon: Icon(Icons.search), labelText: 'جستجوی فایل', border: OutlineInputBorder()))),
+        const SizedBox(width: 8),
+        IconButton.filled(onPressed: _add, icon: const Icon(Icons.add)),
+      ])),
+      SingleChildScrollView(scrollDirection: Axis.horizontal, padding: const EdgeInsets.symmetric(horizontal: 10), child: Row(children: types.map((t) => Padding(padding: const EdgeInsets.only(left: 6), child: ChoiceChip(label: Text(t), selected: filter == t, onSelected: (_) => setState(() => filter = t)))).toList())),
+      const SizedBox(height: 8),
+      Expanded(child: list.isEmpty ? const Center(child: Text('هنوز فایلی ثبت نشده است')) : ListView.builder(itemCount: list.length, itemBuilder: (_, i) {
+        final p = list[i];
+        return Card(margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 5), child: ListTile(
+          title: Text('${p.code} - ${p.title}'),
+          subtitle: Text('${p.type} | ${p.area} متر | ${p.price}\n${p.address}'),
+          isThreeLine: true,
+          trailing: PopupMenuButton<String>(itemBuilder: (_) => const [PopupMenuItem(value: 'edit', child: Text('ویرایش')), PopupMenuItem(value: 'sms', child: Text('پیامک'))], onSelected: (v) async {
+            if (v == 'edit') _edit(p);
+            if (v == 'sms' && p.phone.trim().isNotEmpty) {
+              final body = Uri.encodeComponent('سلام، در خصوص فایل ${p.title} از دپارتمان میراث ملک با شما تماس می‌گیریم.');
+              await launchUrl(Uri.parse('sms:${p.phone}?body=$body'));
+            }
+          }),
+        ));
+      })),
+    ]);
   }
+
+  void _add() => showDialog(context: context, builder: (_) => PropertyForm(onSave: (p) { properties.add(p); setState(() {}); widget.onChanged(); }));
+  void _edit(Property p) => showDialog(context: context, builder: (_) => PropertyForm(initial: p, onSave: (updated) { final i = properties.indexOf(p); if (i >= 0) properties[i] = updated; setState(() {}); widget.onChanged(); }));
 }
 
 class PropertyForm extends StatefulWidget {
   final Property? initial;
   final void Function(Property) onSave;
-
   const PropertyForm({super.key, this.initial, required this.onSave});
-
   @override
   State<PropertyForm> createState() => _PropertyFormState();
 }
@@ -363,237 +214,151 @@ class PropertyForm extends StatefulWidget {
 class _PropertyFormState extends State<PropertyForm> {
   late final Map<String, TextEditingController> fields;
   late String type;
+  late Map<String, bool> checked;
+  late Map<String, TextEditingController> notes;
 
-  final fieldNames = const [
-    'کد فایل',
-    'عنوان',
-    'آدرس',
-    'نام مالک',
-    'تلفن مالک',
-    'قیمت',
-    'متراژ',
-    'تعداد اتاق',
-    'سال ساخت',
-    'لینک دیوار',
-    'توضیحات',
-  ];
+  final fieldNames = const ['کد فایل', 'عنوان', 'آدرس', 'منطقه/محله', 'نام مالک', 'تلفن مالک', 'قیمت کل', 'قیمت هر متر', 'متراژ', 'تعداد اتاق', 'سال ساخت', 'طبقه', 'لینک دیوار', 'توضیحات کلی'];
+  final optionGroups = const {
+    'نوع معامله': ['فروش', 'رهن کامل', 'رهن و اجاره', 'اجاره', 'معاوضه', 'مشارکت در ساخت', 'پیش‌فروش'],
+    'وضعیت آگهی': ['شخصی / مالک', 'مشاور املاک', 'سازنده', 'تعاونی'],
+    'امکانات آپارتمان': ['پارکینگ', 'انباری', 'آسانسور', 'بالکن', 'لابی', 'نگهبانی', 'استخر', 'سونا', 'جکوزی', 'روف‌گاردن', 'درب ضدسرقت', 'کولرگازی', 'پکیج', 'شوفاژ', 'گرمایش از کف'],
+    'ویژگی واحد': ['فول امکانات', 'مبله', 'نوساز', 'بازسازی‌شده', 'تک‌واحدی', 'دوکله', 'نورگیر', 'جنوبی', 'شمالی', 'مستر', 'کلوزت', 'پنت‌هاوس', 'قابلیت تبدیل', 'سند آماده'],
+    'وضعیت سند و ملک': ['سند تک‌برگ', 'سند شش‌دانگ', 'وکالتی', 'قولنامه‌ای', 'سند در رهن', 'پایان‌کار دارد', 'عدم خلاف دارد', 'جواز ساخت دارد', 'تخلیه فوری', 'مالک حاضر به معامله'],
+    'ویژگی زمین / باغ / ویلا': ['بر اصلی', 'بر دو نبش', 'دسترسی آسفالت', 'آب', 'برق', 'گاز', 'چاه آب', 'استخر', 'باغ میوه', 'دیوارکشی', 'سنددار', 'داخل بافت', 'خارج بافت', 'قابلیت ساخت'],
+  };
 
   @override
   void initState() {
     super.initState();
     final p = widget.initial;
     type = p?.type ?? 'آپارتمان';
-    fields = {
-      for (final name in fieldNames)
-        name: TextEditingController(text: _value(p, name)),
-    };
+    fields = {for (final n in fieldNames) n: TextEditingController(text: _value(p, n))};
+    checked = {};
+    notes = {};
+    for (final group in optionGroups.values) {
+      for (final option in group) {
+        checked[option] = p?.options.containsKey(option) ?? false;
+        notes[option] = TextEditingController(text: p?.options[option] ?? '');
+      }
+    }
   }
 
   String _value(Property? p, String key) {
     if (p == null) return '';
-    return {
-          'کد فایل': p.code,
-          'عنوان': p.title,
-          'آدرس': p.address,
-          'نام مالک': p.owner,
-          'تلفن مالک': p.phone,
-          'قیمت': p.price,
-          'متراژ': p.area,
-          'تعداد اتاق': p.rooms,
-          'سال ساخت': p.year,
-          'لینک دیوار': p.link,
-          'توضیحات': p.desc,
-        }[key] ??
-        '';
+    return {'کد فایل': p.code, 'عنوان': p.title, 'آدرس': p.address, 'منطقه/محله': _areaText(p), 'نام مالک': p.owner, 'تلفن مالک': p.phone, 'قیمت کل': p.price, 'قیمت هر متر': _perMeter(p), 'متراژ': p.area, 'تعداد اتاق': p.rooms, 'سال ساخت': p.year, 'طبقه': _floorText(p), 'لینک دیوار': p.link, 'توضیحات کلی': p.desc}[key] ?? '';
   }
+
+  String _areaText(Property p) => p.options['منطقه/محله'] ?? '';
+  String _floorText(Property p) => p.options['طبقه'] ?? '';
+  String _perMeter(Property p) => p.options['قیمت هر متر'] ?? '';
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(widget.initial == null ? 'ثبت فایل جدید' : 'ویرایش فایل'),
-      content: SizedBox(
-        width: 520,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              DropdownButtonFormField<String>(
-                initialValue: type,
-                items: const ['آپارتمان', 'ویلا', 'تجاری', 'زمین', 'باغ', 'مشارکت', 'پیش‌فروش']
-                    .map((value) => DropdownMenuItem(value: value, child: Text(value)))
-                    .toList(),
-                onChanged: (value) {
-                  if (value != null) setState(() => type = value);
-                },
-                decoration: const InputDecoration(labelText: 'نوع ملک'),
-              ),
-              ...fields.entries.map(
-                (entry) => Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: TextField(
-                    controller: entry.value,
-                    maxLines: entry.key == 'توضیحات' ? 3 : 1,
-                    decoration: InputDecoration(
-                      labelText: entry.key,
-                      border: const OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+      content: SizedBox(width: 620, child: SingleChildScrollView(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        const Text('اطلاعات اصلی', style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 8),
+        _text('کد فایل'), _text('عنوان'), _text('آدرس'), _text('منطقه/محله'), _text('نام مالک'), _text('تلفن مالک'), _text('قیمت کل'), _text('قیمت هر متر'), _text('متراژ'), _text('تعداد اتاق'), _text('سال ساخت'), _text('طبقه'), _text('لینک دیوار'), _text('توضیحات کلی', lines: 3),
+        const SizedBox(height: 12),
+        _typeSection(),
+        for (final entry in optionGroups.entries) _optionSection(entry.key, entry.value),
+      ]))),
       actions: [
         TextButton(onPressed: () => Navigator.pop(context), child: const Text('انصراف')),
-        FilledButton(
-          onPressed: () {
-            final property = Property(
-              code: fields['کد فایل']!.text,
-              type: type,
-              title: fields['عنوان']!.text,
-              address: fields['آدرس']!.text,
-              owner: fields['نام مالک']!.text,
-              phone: fields['تلفن مالک']!.text,
-              price: fields['قیمت']!.text,
-              area: fields['متراژ']!.text,
-              rooms: fields['تعداد اتاق']!.text,
-              year: fields['سال ساخت']!.text,
-              link: fields['لینک دیوار']!.text,
-              desc: fields['توضیحات']!.text,
-            );
-            widget.onSave(property);
-            Navigator.pop(context);
-          },
-          child: const Text('ذخیره'),
-        ),
+        FilledButton(onPressed: _save, child: const Text('ذخیره فایل')),
       ],
     );
+  }
+
+  Widget _text(String name, {int lines = 1}) => Padding(padding: const EdgeInsets.only(top: 8), child: TextField(controller: fields[name], maxLines: lines, keyboardType: ['تلفن مالک', 'قیمت کل', 'قیمت هر متر', 'متراژ', 'تعداد اتاق', 'سال ساخت', 'طبقه'].contains(name) ? TextInputType.number : TextInputType.text, decoration: InputDecoration(labelText: name, border: const OutlineInputBorder())));
+
+  Widget _typeSection() => Card(child: Padding(padding: const EdgeInsets.all(10), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    const Text('نوع ملک', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+    ...['آپارتمان', 'ویلا', 'تجاری', 'اداری', 'زمین', 'باغ', 'مشارکت', 'پیش‌فروش'].map((v) => CheckboxListTile(dense: true, contentPadding: EdgeInsets.zero, value: type == v, title: Text(v), onChanged: (on) { if (on == true) setState(() => type = v); })),
+  ])));
+
+  Widget _optionSection(String title, List<String> options) => Card(margin: const EdgeInsets.only(top: 10), child: Padding(padding: const EdgeInsets.all(10), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+    const SizedBox(height: 4),
+    ...options.map((option) => _optionTile(option)),
+  ])));
+
+  Widget _optionTile(String option) => Column(children: [
+    CheckboxListTile(
+      dense: true,
+      contentPadding: EdgeInsets.zero,
+      controlAffinity: ListTileControlAffinity.leading,
+      value: checked[option] ?? false,
+      title: Text(option),
+      onChanged: (v) => setState(() => checked[option] = v ?? false),
+    ),
+    if (checked[option] == true) Padding(padding: const EdgeInsets.only(right: 42, bottom: 6), child: TextField(controller: notes[option], maxLines: 1, decoration: const InputDecoration(labelText: 'توضیح اختیاری', hintText: 'در صورت نیاز توضیح را وارد کنید', border: OutlineInputBorder(), isDense: true))),
+  ]);
+
+  void _save() {
+    final options = <String, String>{};
+    for (final option in checked.keys) {
+      if (checked[option] == true) options[option] = notes[option]!.text.trim();
+    }
+    options['منطقه/محله'] = fields['منطقه/محله']!.text.trim();
+    options['قیمت هر متر'] = fields['قیمت هر متر']!.text.trim();
+    options['طبقه'] = fields['طبقه']!.text.trim();
+    final p = Property(
+      code: fields['کد فایل']!.text.trim(), title: fields['عنوان']!.text.trim(), address: fields['آدرس']!.text.trim(), owner: fields['نام مالک']!.text.trim(), phone: fields['تلفن مالک']!.text.trim(), price: fields['قیمت کل']!.text.trim(), area: fields['متراژ']!.text.trim(), rooms: fields['تعداد اتاق']!.text.trim(), year: fields['سال ساخت']!.text.trim(), link: fields['لینک دیوار']!.text.trim(), desc: fields['توضیحات کلی']!.text.trim(), type: type, options: options,
+    );
+    widget.onSave(p);
+    Navigator.pop(context);
   }
 }
 
 class ClientPage extends StatefulWidget {
   const ClientPage({super.key});
-
   @override
   State<ClientPage> createState() => _ClientPageState();
 }
 
 class _ClientPageState extends State<ClientPage> {
-  final controller = TextEditingController();
-
+  final name = TextEditingController();
+  final phone = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(18),
-      child: Column(
-        children: [
-          TextField(
-            controller: controller,
-            decoration: const InputDecoration(
-              labelText: 'شماره / نام مشتری',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 10),
-          FilledButton.icon(
-            onPressed: () {
-              if (controller.text.trim().isNotEmpty) {
-                clients.add(controller.text.trim());
-                controller.clear();
-                setState(() {});
-              }
-            },
-            icon: const Icon(Icons.person_add),
-            label: const Text('ثبت مشتری'),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: clients.length,
-              itemBuilder: (_, index) => Card(
-                child: ListTile(
-                  title: Text(clients[index]),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.sms),
-                    onPressed: () => launchUrl(Uri.parse('sms:${clients[index]}')),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+    return Column(children: [
+      Padding(padding: const EdgeInsets.all(12), child: Row(children: [Expanded(child: TextField(controller: name, decoration: const InputDecoration(labelText: 'نام مشتری', border: OutlineInputBorder()))), const SizedBox(width: 8), Expanded(child: TextField(controller: phone, keyboardType: TextInputType.phone, decoration: const InputDecoration(labelText: 'شماره موبایل', border: OutlineInputBorder()))), const SizedBox(width: 8), IconButton.filled(onPressed: () { if (phone.text.trim().isNotEmpty) setState(() => clients.add('${name.text.trim()} - ${phone.text.trim()}')); }, icon: const Icon(Icons.add))])),
+      Expanded(child: ListView.builder(itemCount: clients.length, itemBuilder: (_, i) => ListTile(leading: const Icon(Icons.person), title: Text(clients[i])))),
+    ]);
   }
 }
 
 class CommissionPage extends StatefulWidget {
   const CommissionPage({super.key});
-
   @override
   State<CommissionPage> createState() => _CommissionPageState();
 }
 
 class _CommissionPageState extends State<CommissionPage> {
-  final price = TextEditingController();
-  double rate = .005;
-
+  final amount = TextEditingController();
+  String rate = '0.5%';
   @override
   Widget build(BuildContext context) {
-    final amount = double.tryParse(price.text.replaceAll(',', '')) ?? 0;
-    final base = amount * rate;
-    final vat = base * .1;
-
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          TextField(
-            controller: price,
-            onChanged: (_) => setState(() {}),
-            keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              labelText: 'مبلغ معامله (تومان)',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 14),
-          DropdownButtonFormField<double>(
-            initialValue: rate,
-            items: const [
-              DropdownMenuItem(value: .005, child: Text('۰.۵٪')),
-              DropdownMenuItem(value: .25, child: Text('۲۵٪')),
-              DropdownMenuItem(value: .01, child: Text('۱٪')),
-            ],
-            onChanged: (value) {
-              if (value != null) setState(() => rate = value);
-            },
-            decoration: const InputDecoration(labelText: 'درصد کمیسیون'),
-          ),
-          const SizedBox(height: 25),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  Text('کمیسیون: ${base.toStringAsFixed(0)} تومان'),
-                  Text('مالیات ۱۰٪: ${vat.toStringAsFixed(0)} تومان'),
-                  Text(
-                    'جمع: ${(base + vat).toStringAsFixed(0)} تومان',
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+    final a = double.tryParse(amount.text.replaceAll(',', '')) ?? 0;
+    final r = double.tryParse(rate.replaceAll('%', '')) ?? 0;
+    final base = a * r / 100;
+    final vat = base * .10;
+    return ListView(padding: const EdgeInsets.all(18), children: [
+      const Text('محاسبه کمیسیون', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+      const SizedBox(height: 12),
+      TextField(controller: amount, onChanged: (_) => setState(() {}), keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'مبلغ معامله', border: OutlineInputBorder())),
+      const SizedBox(height: 10),
+      DropdownButtonFormField<String>(initialValue: rate, items: const ['0.5%', '1%', '25%'].map((v) => DropdownMenuItem(value: v, child: Text(v))).toList(), onChanged: (v) { if (v != null) setState(() => rate = v); }, decoration: const InputDecoration(labelText: 'نرخ کمیسیون', border: OutlineInputBorder())),
+      const SizedBox(height: 18),
+      Card(child: Padding(padding: const EdgeInsets.all(16), child: Text('کمیسیون: ${base.toStringAsFixed(0)}\nمالیات ۱۰٪: ${vat.toStringAsFixed(0)}\nجمع: ${(base + vat).toStringAsFixed(0)}'))),
+    ]);
   }
 }
 
 class MeetingPage extends StatefulWidget {
   const MeetingPage({super.key});
-
   @override
   State<MeetingPage> createState() => _MeetingPageState();
 }
@@ -601,45 +366,18 @@ class MeetingPage extends StatefulWidget {
 class _MeetingPageState extends State<MeetingPage> {
   final title = TextEditingController();
   final date = TextEditingController();
-  final items = <String>[];
-
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(18),
-      child: Column(
-        children: [
-          TextField(
-            controller: title,
-            decoration: const InputDecoration(labelText: 'عنوان جلسه', border: OutlineInputBorder()),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: date,
-            decoration: const InputDecoration(labelText: 'تاریخ و ساعت', border: OutlineInputBorder()),
-          ),
-          const SizedBox(height: 8),
-          FilledButton(
-            onPressed: () {
-              if (title.text.trim().isNotEmpty) {
-                setState(() {
-                  items.add('${title.text.trim()} - ${date.text.trim()}');
-                  title.clear();
-                  date.clear();
-                });
-              }
-            },
-            child: const Text('ثبت جلسه'),
-          ),
-          Expanded(
-            child: ListView(
-              children: items
-                  .map((item) => Card(child: ListTile(leading: const Icon(Icons.event), title: Text(item))))
-                  .toList(),
-            ),
-          ),
-        ],
-      ),
-    );
+    return ListView(padding: const EdgeInsets.all(16), children: [
+      const Text('جلسات و قرارها', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+      const SizedBox(height: 12),
+      TextField(controller: title, decoration: const InputDecoration(labelText: 'عنوان جلسه', border: OutlineInputBorder())),
+      const SizedBox(height: 8),
+      TextField(controller: date, decoration: const InputDecoration(labelText: 'تاریخ و ساعت', border: OutlineInputBorder())),
+      const SizedBox(height: 8),
+      FilledButton(onPressed: () { if (title.text.trim().isNotEmpty) setState(() => meetings.add('${title.text.trim()} - ${date.text.trim()}')); }, child: const Text('ثبت جلسه')),
+      const SizedBox(height: 12),
+      ...meetings.map((m) => Card(child: ListTile(leading: const Icon(Icons.event), title: Text(m)))),
+    ]);
   }
 }
