@@ -21,8 +21,9 @@ jobs:
           from pathlib import Path
           p=Path('lib/main.dart')
           s=p.read_text()
-          s=s.replace(']))));}}', '])))));}}')
+          s=s.replace(']))));}}', '])))));}')
           s=s.replace('e.key=TextEditingController(text:e.value)', 'e.key:TextEditingController(text:e.value)')
+          s=s.replace("Text('$n',style:const TextStyle(fontSize:20,fontWeight:FontWeight.bold))])));}", "Text('$n',style:const TextStyle(fontSize:20,fontWeight:FontWeight.bold))])));")
           p.write_text(s)
           PY
           rm -f lib/main_final.dart lib/main_clean.dart test/widget_test.dart
@@ -71,8 +72,9 @@ jobs:
           from pathlib import Path
           p=Path('lib/main.dart')
           s=p.read_text()
-          s=s.replace(']))));}}', '])))));}}')
+          s=s.replace(']))));}}', '])))));}')
           s=s.replace('e.key=TextEditingController(text:e.value)', 'e.key:TextEditingController(text:e.value)')
+          s=s.replace("Text('$n',style:const TextStyle(fontSize:20,fontWeight:FontWeight.bold))])));}", "Text('$n',style:const TextStyle(fontSize:20,fontWeight:FontWeight.bold))]));")
           p.write_text(s)
           PY
           rm -f lib/main_final.dart lib/main_clean.dart test/widget_test.dart
@@ -99,8 +101,9 @@ jobs:
           from pathlib import Path
           p=Path('lib/main.dart')
           s=p.read_text()
-          s=s.replace(']))));}}', '])))));}}')
+          s=s.replace(']))));}}', '])))));}')
           s=s.replace('e.key=TextEditingController(text:e.value)', 'e.key:TextEditingController(text:e.value)')
+          s=s.replace("Text('$n',style:const TextStyle(fontSize:20,fontWeight:FontWeight.bold))])));}", "Text('$n',style:const TextStyle(fontSize:20,fontWeight:FontWeight.bold))]));")
           p.write_text(s)
           PY
           rm -f lib/main_final.dart lib/main_clean.dart test/widget_test.dart
