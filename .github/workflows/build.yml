@@ -19,28 +19,9 @@ jobs:
           cp lib/main_final.dart lib/main.dart
           python3 - <<'PY'
           from pathlib import Path
-          import re
           p=Path('lib/main.dart')
           s=p.read_text()
-          shell='''class _ShellState extends State<Shell>{
-            int tab=0;
-            @override Widget build(BuildContext c){
-              final pages=<Widget>[Home(onTab:(i)=>setState(()=>tab=i)),const Files(),const Clients(),const Meetings(),const Commission()];
-              return Directionality(textDirection:TextDirection.rtl,child:Scaffold(
-                appBar:AppBar(backgroundColor:navy,foregroundColor:Colors.white,title:const Text('میراث ملک'),actions:[IconButton(onPressed:()=>showDialog(context:c,builder:(_)=>Settings(onDark:widget.onDark)),icon:const Icon(Icons.settings))]),
-                body:pages[tab],
-                bottomNavigationBar:NavigationBar(backgroundColor:navy,selectedIndex:tab,onDestinationSelected:(i)=>setState(()=>tab=i),destinations:const[
-                  NavigationDestination(icon:Icon(Icons.dashboard,color:Colors.white),label:'خانه'),
-                  NavigationDestination(icon:Icon(Icons.home_work,color:Colors.white),label:'فایل‌ها'),
-                  NavigationDestination(icon:Icon(Icons.people,color:Colors.white),label:'مشتریان'),
-                  NavigationDestination(icon:Icon(Icons.event,color:Colors.white),label:'جلسات'),
-                  NavigationDestination(icon:Icon(Icons.calculate,color:Colors.white),label:'کمیسیون'),
-                ]),
-              ));
-            }
-          }
-          '''
-          s=re.sub(r'class _ShellState.*?class Home',shell+'class Home',s,flags=re.S)
+          s=s.replace("children:fields));}}", "children:fields))));}")
           p.write_text(s)
           PY
       - run: flutter pub get
@@ -74,28 +55,9 @@ jobs:
           cp lib/main_final.dart lib/main.dart
           python3 - <<'PY'
           from pathlib import Path
-          import re
           p=Path('lib/main.dart')
           s=p.read_text()
-          shell='''class _ShellState extends State<Shell>{
-            int tab=0;
-            @override Widget build(BuildContext c){
-              final pages=<Widget>[Home(onTab:(i)=>setState(()=>tab=i)),const Files(),const Clients(),const Meetings(),const Commission()];
-              return Directionality(textDirection:TextDirection.rtl,child:Scaffold(
-                appBar:AppBar(backgroundColor:navy,foregroundColor:Colors.white,title:const Text('میراث ملک'),actions:[IconButton(onPressed:()=>showDialog(context:c,builder:(_)=>Settings(onDark:widget.onDark)),icon:const Icon(Icons.settings))]),
-                body:pages[tab],
-                bottomNavigationBar:NavigationBar(backgroundColor:navy,selectedIndex:tab,onDestinationSelected:(i)=>setState(()=>tab=i),destinations:const[
-                  NavigationDestination(icon:Icon(Icons.dashboard,color:Colors.white),label:'خانه'),
-                  NavigationDestination(icon:Icon(Icons.home_work,color:Colors.white),label:'فایل‌ها'),
-                  NavigationDestination(icon:Icon(Icons.people,color:Colors.white),label:'مشتریان'),
-                  NavigationDestination(icon:Icon(Icons.event,color:Colors.white),label:'جلسات'),
-                  NavigationDestination(icon:Icon(Icons.calculate,color:Colors.white),label:'کمیسیون'),
-                ]),
-              ));
-            }
-          }
-          '''
-          s=re.sub(r'class _ShellState.*?class Home',shell+'class Home',s,flags=re.S)
+          s=s.replace("children:fields));}}", "children:fields))));}")
           p.write_text(s)
           PY
       - run: flutter pub get
@@ -119,28 +81,9 @@ jobs:
           cp lib/main_final.dart lib/main.dart
           python3 - <<'PY'
           from pathlib import Path
-          import re
           p=Path('lib/main.dart')
           s=p.read_text()
-          shell='''class _ShellState extends State<Shell>{
-            int tab=0;
-            @override Widget build(BuildContext c){
-              final pages=<Widget>[Home(onTab:(i)=>setState(()=>tab=i)),const Files(),const Clients(),const Meetings(),const Commission()];
-              return Directionality(textDirection:TextDirection.rtl,child:Scaffold(
-                appBar:AppBar(backgroundColor:navy,foregroundColor:Colors.white,title:const Text('میراث ملک'),actions:[IconButton(onPressed:()=>showDialog(context:c,builder:(_)=>Settings(onDark:widget.onDark)),icon:const Icon(Icons.settings))]),
-                body:pages[tab],
-                bottomNavigationBar:NavigationBar(backgroundColor:navy,selectedIndex:tab,onDestinationSelected:(i)=>setState(()=>tab=i),destinations:const[
-                  NavigationDestination(icon:Icon(Icons.dashboard,color:Colors.white),label:'خانه'),
-                  NavigationDestination(icon:Icon(Icons.home_work,color:Colors.white),label:'فایل‌ها'),
-                  NavigationDestination(icon:Icon(Icons.people,color:Colors.white),label:'مشتریان'),
-                  NavigationDestination(icon:Icon(Icons.event,color:Colors.white),label:'جلسات'),
-                  NavigationDestination(icon:Icon(Icons.calculate,color:Colors.white),label:'کمیسیون'),
-                ]),
-              ));
-            }
-          }
-          '''
-          s=re.sub(r'class _ShellState.*?class Home',shell+'class Home',s,flags=re.S)
+          s=s.replace("children:fields));}}", "children:fields))));}")
           p.write_text(s)
           PY
       - run: flutter pub get
