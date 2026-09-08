@@ -20,7 +20,7 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           p=Path('lib/main.dart')
-          s=p.read_text().replace(")]));}", ")]))) ;}".replace(' ', ''))
+          s=p.read_text().replace("')]));}", "')]))) ;}".replace(' ', ''))
           p.write_text(s)
           PY
       - run: flutter pub get
@@ -55,7 +55,7 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           p=Path('lib/main.dart')
-          s=p.read_text().replace(")]));}", ")]))) ;}".replace(' ', ''))
+          s=p.read_text().replace("')]));}", "')]))) ;}".replace(' ', ''))
           p.write_text(s)
           PY
       - run: flutter pub get
@@ -80,7 +80,7 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           p=Path('lib/main.dart')
-          s=p.read_text().replace(")]));}", ")]))) ;}".replace(' ', ''))
+          s=p.read_text().replace("')]));}", "')]))) ;}".replace(' ', ''))
           p.write_text(s)
           PY
       - run: flutter pub get
