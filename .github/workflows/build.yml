@@ -36,7 +36,7 @@ jobs:
                   NavigationDestination(icon:Icon(Icons.event,color:Colors.white),label:'جلسات'),
                   NavigationDestination(icon:Icon(Icons.calculate,color:Colors.white),label:'کمیسیون'),
                 ]),
-              );
+              ));
             }
           }
           '''
@@ -91,7 +91,7 @@ jobs:
                   NavigationDestination(icon:Icon(Icons.event,color:Colors.white),label:'جلسات'),
                   NavigationDestination(icon:Icon(Icons.calculate,color:Colors.white),label:'کمیسیون'),
                 ]),
-              );
+              ));
             }
           }
           '''
@@ -136,7 +136,7 @@ jobs:
                   NavigationDestination(icon:Icon(Icons.event,color:Colors.white),label:'جلسات'),
                   NavigationDestination(icon:Icon(Icons.calculate,color:Colors.white),label:'کمیسیون'),
                 ]),
-              );
+              ));
             }
           }
           '''
