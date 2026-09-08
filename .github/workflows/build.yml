@@ -19,9 +19,10 @@ jobs:
           cp lib/main_final.dart lib/main.dart
           python3 - <<'PY'
           from pathlib import Path
+          import re
           p=Path('lib/main.dart')
           s=p.read_text()
-          s=s.replace("children:fields))}}", "children:fields)));}")
+          s=re.sub(r'children:fields\)\);?\}\}', 'children:fields)));}', s)
           p.write_text(s)
           PY
       - run: flutter pub get
@@ -55,9 +56,10 @@ jobs:
           cp lib/main_final.dart lib/main.dart
           python3 - <<'PY'
           from pathlib import Path
+          import re
           p=Path('lib/main.dart')
           s=p.read_text()
-          s=s.replace("children:fields))}}", "children:fields)));}")
+          s=re.sub(r'children:fields\)\);?\}\}', 'children:fields)));}', s)
           p.write_text(s)
           PY
       - run: flutter pub get
@@ -81,9 +83,10 @@ jobs:
           cp lib/main_final.dart lib/main.dart
           python3 - <<'PY'
           from pathlib import Path
+          import re
           p=Path('lib/main.dart')
           s=p.read_text()
-          s=s.replace("children:fields))}}", "children:fields)));}")
+          s=re.sub(r'children:fields\)\);?\}\}', 'children:fields)));}', s)
           p.write_text(s)
           PY
       - run: flutter pub get
