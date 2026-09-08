@@ -14,7 +14,15 @@ jobs:
           channel: stable
           cache: true
       - run: flutter create --platforms=android,web .
-      - run: cp lib/main_final.dart lib/main.dart
+      - name: Prepare source
+        run: |
+          cp lib/main_final.dart lib/main.dart
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('lib/main.dart')
+          s=p.read_text().replace(")]));}", ")]))) ;}".replace(' ', ''))
+          p.write_text(s)
+          PY
       - run: flutter pub get
       - run: flutter analyze --no-fatal-warnings --no-fatal-infos || true
       - name: Configure Java 17 for Android plugins
@@ -41,7 +49,15 @@ jobs:
           channel: stable
           cache: true
       - run: flutter create --platforms=web .
-      - run: cp lib/main_final.dart lib/main.dart
+      - name: Prepare source
+        run: |
+          cp lib/main_final.dart lib/main.dart
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('lib/main.dart')
+          s=p.read_text().replace(")]));}", ")]))) ;}".replace(' ', ''))
+          p.write_text(s)
+          PY
       - run: flutter pub get
       - run: flutter build web --release
       - uses: actions/upload-artifact@v4
@@ -58,7 +74,15 @@ jobs:
           channel: stable
           cache: true
       - run: flutter create --platforms=ios .
-      - run: cp lib/main_final.dart lib/main.dart
+      - name: Prepare source
+        run: |
+          cp lib/main_final.dart lib/main.dart
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('lib/main.dart')
+          s=p.read_text().replace(")]));}", ")]))) ;}".replace(' ', ''))
+          p.write_text(s)
+          PY
       - run: flutter pub get
       - run: flutter build ios --release --no-codesign
       - uses: actions/upload-artifact@v4
