@@ -15,22 +15,7 @@ jobs:
           cache: true
       - run: flutter create --platforms=android,web .
       - name: Prepare final source
-        run: |
-          cp lib/main_final.dart lib/main.dart
-          python3 - <<'PY'
-          from pathlib import Path
-          p=Path('lib/main.dart')
-          s=p.read_text()
-          s=s.replace(']))));}}', '])))));}')
-          s=s.replace('e.key=TextEditingController(text:e.value)', 'e.key:TextEditingController(text:e.value)')
-          lines=s.splitlines()
-          for i,line in enumerate(lines):
-              if line.startswith('Widget stat(') and line.endswith('}'): lines[i]=line[:-1]
-              if line.startswith('class _PropertyDialogState') and line.endswith('}}'): lines[i]=line[:-1]
-              if line.startswith('class _SettingsDialogState') and line.endswith('}}'): lines[i]=line[:-1]
-          p.write_text('\n'.join(lines)+'\n')
-          PY
-          rm -f lib/main_final.dart lib/main_clean.dart test/widget_test.dart
+        run: cp lib/main_clean.dart lib/main.dart
       - run: flutter pub get
       - run: flutter analyze --no-fatal-warnings --no-fatal-infos || true
       - name: Configure Java 17 for Android plugins
@@ -58,22 +43,7 @@ jobs:
           cache: true
       - run: flutter create --platforms=web .
       - name: Prepare final source
-        run: |
-          cp lib/main_final.dart lib/main.dart
-          python3 - <<'PY'
-          from pathlib import Path
-          p=Path('lib/main.dart')
-          s=p.read_text()
-          s=s.replace(']))));}}', '])))));}')
-          s=s.replace('e.key=TextEditingController(text:e.value)', 'e.key:TextEditingController(text:e.value)')
-          lines=s.splitlines()
-          for i,line in enumerate(lines):
-              if line.startswith('Widget stat(') and line.endswith('}'): lines[i]=line[:-1]
-              if line.startswith('class _PropertyDialogState') and line.endswith('}}'): lines[i]=line[:-1]
-              if line.startswith('class _SettingsDialogState') and line.endswith('}}'): lines[i]=line[:-1]
-          p.write_text('\n'.join(lines)+'\n')
-          PY
-          rm -f lib/main_final.dart lib/main_clean.dart test/widget_test.dart
+        run: cp lib/main_clean.dart lib/main.dart
       - run: flutter pub get
       - run: flutter build web --release
       - uses: actions/upload-artifact@v4
@@ -91,22 +61,7 @@ jobs:
           cache: true
       - run: flutter create --platforms=ios .
       - name: Prepare final source
-        run: |
-          cp lib/main_final.dart lib/main.dart
-          python3 - <<'PY'
-          from pathlib import Path
-          p=Path('lib/main.dart')
-          s=p.read_text()
-          s=s.replace(']))));}}', '])))));}')
-          s=s.replace('e.key=TextEditingController(text:e.value)', 'e.key:TextEditingController(text:e.value)')
-          lines=s.splitlines()
-          for i,line in enumerate(lines):
-              if line.startswith('Widget stat(') and line.endswith('}'): lines[i]=line[:-1]
-              if line.startswith('class _PropertyDialogState') and line.endswith('}}'): lines[i]=line[:-1]
-              if line.startswith('class _SettingsDialogState') and line.endswith('}}'): lines[i]=line[:-1]
-          p.write_text('\n'.join(lines)+'\n')
-          PY
-          rm -f lib/main_final.dart lib/main_clean.dart test/widget_test.dart
+        run: cp lib/main_clean.dart lib/main.dart
       - run: flutter pub get
       - run: flutter build ios --release --no-codesign
       - uses: actions/upload-artifact@v4
