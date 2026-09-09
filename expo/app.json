@@ -1,0 +1,14 @@
+{
+  "expo": {
+    "name": "میراث ملک",
+    "slug": "mirath-melk-smart",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "scheme": "mirathmelk",
+    "web": {"bundler":"metro","output":"static"},
+    "plugins": ["expo-av"],
+    "android": {"package":"com.mirathmelk.smart","permissions":["RECORD_AUDIO"]},
+    "ios": {"bundleIdentifier":"com.mirathmelk.smart","supportsTablet":true,"infoPlist":{"NSMicrophoneUsageDescription":"برای ثبت مکالمه مشتری و تکمیل خودکار فایل ملک استفاده می‌شود."}}
+  }
+}

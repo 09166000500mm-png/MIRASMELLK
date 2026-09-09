@@ -1,0 +1,3 @@
+import React from 'react'; import {Pressable,Text,StyleSheet} from 'react-native'; import {Ionicons} from '@expo/vector-icons';
+export default function VoiceButton({active,onPress}:{active:boolean;onPress:()=>void}){return <Pressable onPress={onPress} style={[s.btn,active&&s.active]}><Ionicons name={active?'stop':'call'} size={42} color="white"/><Text style={s.t}>{active?'پایان تماس':'شروع تماس با مشتری'}</Text></Pressable>}
+const s=StyleSheet.create({btn:{height:150,borderRadius:32,alignItems:'center',justifyContent:'center',backgroundColor:'#14532d',gap:8,marginVertical:24},active:{backgroundColor:'#991b1b'},t:{color:'#fff',fontSize:20,fontWeight:'800'}});

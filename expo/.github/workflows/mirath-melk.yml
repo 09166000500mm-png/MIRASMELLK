@@ -1,0 +1,71 @@
+name: Mirath Melk Expo Build
+on:
+  workflow_dispatch:
+  push:
+    branches: [expo-final]
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: expo
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: expo/package.json
+      - run: npm install
+      - run: npx expo export --platform web
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mirath-melk-web
+          path: expo/dist
+
+  android:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: expo
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: expo/package.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - run: sdkmanager 'platform-tools' 'platforms;android-35' 'build-tools;35.0.0'
+      - run: npm install
+      - run: npx expo prebuild --platform android --non-interactive
+      - run: cd android && ./gradlew assembleRelease
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mirath-melk-apk
+          path: expo/android/app/build/outputs/apk/release/*.apk
+
+  ios-project:
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: expo
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: expo/package.json
+      - run: npm install
+      - run: npx expo prebuild --platform ios --non-interactive
+      - run: npx expo run:ios --configuration Release --no-install --device generic/platform=iOS Simulator
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mirath-melk-ios-project
+          path: expo/ios

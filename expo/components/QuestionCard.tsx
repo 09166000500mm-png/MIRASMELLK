@@ -1,0 +1,3 @@
+import React from 'react'; import {View,Text,StyleSheet} from 'react-native';
+export default function QuestionCard({index,title,prompt}:{index:number;title:string;prompt:string}){return <View style={s.card}><Text style={s.badge}>سؤال {index+1} از ۶</Text><Text style={s.title}>{title}</Text><Text style={s.prompt}>{prompt}</Text></View>};
+const s=StyleSheet.create({card:{backgroundColor:'#fff',borderRadius:24,padding:20,shadowColor:'#000',shadowOpacity:.06,shadowRadius:10,elevation:2},badge:{fontSize:13,color:'#166534',fontWeight:'700',marginBottom:8},title:{fontSize:22,fontWeight:'800',color:'#111827',marginBottom:8},prompt:{fontSize:17,lineHeight:28,color:'#374151'}});
