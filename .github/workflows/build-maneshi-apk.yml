@@ -10,25 +10,39 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: maneshi-telefoni
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
+
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.35.7'
           channel: stable
-      - name: Check Flutter project
+          cache: true
+
+      - name: Create clean Android Flutter project
+        run: flutter create --platforms=android,web --org com.mirasmelk maneshi_build
+
+      - name: Copy Maneshi app files
+        run: |
+          cp maneshi-telefoni/pubspec.yaml maneshi_build/pubspec.yaml
+          cp maneshi-telefoni/lib/main.dart maneshi_build/lib/main.dart
+
+      - name: Get dependencies
+        working-directory: maneshi_build
         run: flutter pub get
-      - name: Build APK
+
+      - name: Build Android APK
+        working-directory: maneshi_build
         run: flutter build apk --release
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Maneshi-Telefoni-APK
-          path: maneshi-telefoni/build/app/outputs/flutter-apk/app-release.apk
+          path: maneshi_build/build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
