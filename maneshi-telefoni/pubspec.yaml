@@ -1,5 +1,5 @@
 name: maneshi_telefoni
-description: Persian phone receptionist control app for Miras Melk.
+description: منشی تلفنی میراث ملک
 publish_to: none
 version: 1.0.0+1
 
@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:
