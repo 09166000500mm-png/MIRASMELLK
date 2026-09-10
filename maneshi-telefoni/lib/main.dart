@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() => runApp(const ManeshiApp());
 
@@ -6,52 +7,95 @@ class ManeshiApp extends StatelessWidget {
   const ManeshiApp({super.key});
   @override
   Widget build(BuildContext context) => MaterialApp(
-    debugShowCheckedModeBanner: false,
-    title: 'منشی تلفنی میراث ملک',
-    theme: ThemeData(useMaterial3: true, fontFamily: 'sans'),
-    home: const HomePage(),
-  );
+        debugShowCheckedModeBanner: false,
+        title: 'منشی تلفنی میراث ملک',
+        theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.indigo),
+        home: const HomePage(),
+      );
 }
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
-  @override State<HomePage> createState() => _HomePageState();
+  @override
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
   final phone = TextEditingController();
-  bool loading = false;
-  String status = 'آماده دریافت شماره مشتری';
+  String status = 'آماده تماس با مشتری';
+  bool calling = false;
 
-  void startCall() {
-    if (phone.text.trim().isEmpty) {
-      setState(() => status = 'لطفاً شماره مشتری را وارد کنید');
+  final questions = const [
+    'نوع ملک چیست؟',
+    'آدرس کامل ملک را لطفاً بفرمایید.',
+    'متراژ ملک چند متر است؟',
+    'سال ساخت ملک چه سالی است؟',
+    'ملک در چه طبقه‌ای قرار دارد؟',
+    'ساختمان چند واحد دارد؟',
+    'قیمت موردنظر شما چقدر است؟',
+    'توضیحات یا شرایط خاصی دارید؟',
+  ];
+
+  Future<void> callCustomer() async {
+    final number = phone.text.trim();
+    if (number.isEmpty) {
+      setState(() => status = 'لطفاً شماره مشتری را وارد کنید.');
       return;
     }
-    setState(() { loading = true; status = 'درخواست تماس ثبت شد؛ اتصال سرویس تلفنی لازم است.'; });
-    Future.delayed(const Duration(seconds: 1), () => setState(() => loading = false));
+    final uri = Uri(scheme: 'tel', path: number);
+    if (await canLaunchUrl(uri)) {
+      setState(() {
+        calling = true;
+        status = 'در حال برقراری تماس با $number';
+      });
+      await launchUrl(uri);
+    } else {
+      setState(() => status = 'امکان برقراری تماس از این دستگاه وجود ندارد.');
+    }
   }
 
   @override
   Widget build(BuildContext context) => Directionality(
-    textDirection: TextDirection.rtl,
-    child: Scaffold(
-      appBar: AppBar(title: const Text('منشی تلفنی میراث ملک')),
-      body: ListView(padding: const EdgeInsets.all(20), children: [
-        const Text('تماس خودکار با مشتری', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 12),
-        const Text('منشی تلفنی برای جمع‌آوری مشخصات ملک.'),
-        const SizedBox(height: 24),
-        TextField(controller: phone, keyboardType: TextInputType.phone, decoration: const InputDecoration(labelText: 'شماره موبایل مشتری', hintText: 'مثلاً 0912... ', border: OutlineInputBorder())),
-        const SizedBox(height: 16),
-        FilledButton.icon(onPressed: loading ? null : startCall, icon: const Icon(Icons.call), label: Text(loading ? 'در حال ثبت...' : 'شروع تماس واقعی')),
-        const SizedBox(height: 20),
-        Card(child: Padding(padding: const EdgeInsets.all(16), child: Text(status))),
-        const SizedBox(height: 20),
-        const Text('سؤالات منشی', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        const Text('نوع ملک • آدرس کامل • متراژ • سال ساخت • طبقه • تعداد واحد • قیمت • توضیحات و شرایط'),
-      ]),
-    ),
-  );
+        textDirection: TextDirection.rtl,
+        child: Scaffold(
+          appBar: AppBar(title: const Text('منشی تلفنی میراث ملک')),
+          body: ListView(
+            padding: const EdgeInsets.all(20),
+            children: [
+              const Icon(Icons.support_agent, size: 72),
+              const SizedBox(height: 8),
+              const Text('منشی تلفنی املاک', textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              const Text('شماره مشتری را وارد کنید تا تماس از گوشی شما برقرار شود.', textAlign: TextAlign.center),
+              const SizedBox(height: 24),
+              TextField(
+                controller: phone,
+                keyboardType: TextInputType.phone,
+                decoration: const InputDecoration(
+                  labelText: 'شماره موبایل مشتری',
+                  hintText: '0912xxxxxxxx',
+                  prefixIcon: Icon(Icons.phone),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 14),
+              FilledButton.icon(
+                onPressed: calling ? null : callCustomer,
+                icon: const Icon(Icons.call),
+                label: Text(calling ? 'تماس برقرار شد' : 'تماس با مشتری'),
+              ),
+              const SizedBox(height: 16),
+              Card(child: Padding(padding: const EdgeInsets.all(16), child: Text(status))),
+              const SizedBox(height: 24),
+              const Text('سؤالات منشی', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              ...questions.asMap().entries.map((e) => ListTile(
+                    leading: CircleAvatar(child: Text('${e.key + 1}')),
+                    title: Text(e.value),
+                  )),
+            ],
+          ),
+        ),
+      );
 }
