@@ -1,0 +1,6 @@
+{
+  "name": "املاک مارکتینگ",
+  "description": "سامانه هوشمند استخراج و مدیریت مخاطبان و ارسال پیامک تبلیغاتی املاک برای سازندگان، فروشندگان و خریداران به تفکیک استان و منطقه",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
