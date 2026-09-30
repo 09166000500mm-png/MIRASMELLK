@@ -33,17 +33,26 @@ jobs:
         with:
           gradle-version: '9.3.1'
 
+      - name: Extract uploaded Android project
+        run: |
+          rm -rf android_project
+          mkdir -p android_project
+          unzip -q project_complete.zip -d android_project
+          test -f android_project/settings.gradle.kts
+          test -d android_project/app
+
       - name: Build debug APK
+        working-directory: android_project
         run: gradle --no-daemon --stacktrace :app:assembleDebug
 
       - name: Verify APK
         run: |
-          test -f app/build/outputs/apk/debug/app-debug.apk
-          ls -lh app/build/outputs/apk/debug/app-debug.apk
+          test -f android_project/app/build/outputs/apk/debug/app-debug.apk
+          ls -lh android_project/app/build/outputs/apk/debug/app-debug.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: MirasMelk-Android-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: android_project/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
